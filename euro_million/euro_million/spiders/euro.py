@@ -18,7 +18,6 @@ class EuroMillionSpider(Spider):
         return ", ".join(string.replace("-", '').replace('\n', '').rsplit())
 
     def parse(self, response):
-        import ipdb; ipdb.set_trace()
         soup = BeautifulSoup(response.body)
         table = soup.find('table', {'class': 'drawhistory'})
         tbody = table.find('tbody')
