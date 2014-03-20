@@ -6,6 +6,8 @@ import smtplib
 
 from operator import itemgetter
 
+from settings import *
+
 
 class Euromillion(object):
     # Available numbers from 1-50
@@ -16,19 +18,20 @@ class Euromillion(object):
     def __init__(self):
         # Initialize connection to db
         self.conn_string = """
-        host='localhost'
-        dbname='euromillion'
-        user='zatan'
-        password='sidabras007'
-        """
+        host='{0}'
+        dbname='{1}'
+        user='{2}'
+        password='{3}'
+        """.format(HOST, DB_NAME, USER, PASSWORD)
         self.conn = psycopg2.connect(self.conn_string)
         self.cursor = self.conn.cursor()
 
     def send_email(self, least_common_numbers, least_common_lucky_numbers):
-        gmail_user = "ikonitas@gmail.com"
-        gmail_pwd = "sidabras0915"
+        gmail_user = GMAIL_USER
+        gmail_pwd = GMAIL_PASSWORD
         FROM = 'euroMillion@gmail.com'
-        TO = ['ikonitas@gmail.com', "doviletaraskute@gmail.com"]
+        #TO = ['ikonitas@gmail.com', "doviletaraskute@gmail.com"]
+        TO = TO_EMAIL
         TEXT = """Numbers: {0} \n Lucky: {1}""".format(
             least_common_numbers,
             least_common_lucky_numbers
@@ -100,9 +103,4 @@ class Euromillion(object):
 
 if __name__ == "__main__":
     euro = Euromillion()
-    #euro.choices()
-    euro.insert_data()
-    euro.close_connection()
-
-
-
+    euro.get_lucky_numbers()
