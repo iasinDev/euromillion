@@ -86,9 +86,9 @@ class Euromillion(object):
         merged_numbers = list(itertools.chain(*numbers))
         merged_lucky_numbers = list(itertools.chain(*lucky_numbers))
 
-        least_common_numbers = self.get_least_common_values(merged_numbers, 10)
+        least_common_numbers = self.get_least_common_values(merged_numbers)
         least_common_lucky_numbers = self.get_least_common_values(
-            merged_lucky_numbers, 5
+            merged_lucky_numbers
         )
         self.send_email(least_common_numbers, least_common_lucky_numbers)
 
