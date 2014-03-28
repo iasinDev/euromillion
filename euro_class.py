@@ -26,17 +26,28 @@ class Euromillion(object):
         self.conn = psycopg2.connect(self.conn_string)
         self.cursor = self.conn.cursor()
 
-    def send_email(self, least_common_numbers, least_common_lucky_numbers):
+    def send_email(self,
+                   least_common_numbers,
+                   least_common_lucky_numbers,
+                   last_week_numbers,
+                   two_weeks_numbers):
         gmail_user = GMAIL_USER
         gmail_pwd = GMAIL_PASSWORD
         FROM = 'euroMillion@gmail.com'
         #TO = ['ikonitas@gmail.com', "doviletaraskute@gmail.com"]
         TO = TO_EMAIL
-        TEXT = """Numbers: {0} \n Lucky: {1}""".format(
+        TEXT = """
+        Numbers: {0} \n
+        Lucky: {1} \n
+        Last week: {2} \n
+        Two weeks: {3}
+        """.format(
             least_common_numbers,
-            least_common_lucky_numbers
+            least_common_lucky_numbers,
+            last_week_numbers,
+            two_weeks_numbers
         )
-        SUBJECT = "Lucky numbers"
+        SUBJECT = "Euromillion Lucky numbers"
         message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
             """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
 
@@ -75,13 +86,24 @@ class Euromillion(object):
 
         numbers = list()
         lucky_numbers = list()
+        last_week_numbers = list()
+        two_weeks_numbers = list()
 
         self.cursor.execute(
-            """SELECT * FROM results"""
+            """SELECT * FROM results ORDER BY date DESC"""
         )
-        for row in self.cursor:
+        rows = self.cursor.fetchall()
+
+        last_week_numbers.append(rows[0][1:])
+        two_weeks_numbers.append(rows[1][1:])
+
+        for row in rows:
             numbers.append(row[1])
             lucky_numbers.append(row[2])
+
+        self.cursor.execute(
+            """SELECT * FROM results ORDER BY date DESC"""
+        )
 
         merged_numbers = list(itertools.chain(*numbers))
         merged_lucky_numbers = list(itertools.chain(*lucky_numbers))
@@ -90,7 +112,12 @@ class Euromillion(object):
         least_common_lucky_numbers = self.get_least_common_values(
             merged_lucky_numbers
         )
-        self.send_email(least_common_numbers, least_common_lucky_numbers)
+        self.send_email(
+            least_common_numbers,
+            least_common_lucky_numbers,
+            last_week_numbers,
+            two_weeks_numbers
+        )
 
     def choices(self):
         numbers, lucky = self.get_data()
