@@ -39,13 +39,13 @@ class Euromillion(object):
         TEXT = """
         Numbers: {0} \n
         Lucky: {1} \n
-        Last week: {2} \n
-        Two weeks: {3}
+        Tuesday: {2} \n
+        Friday: {3}
         """.format(
             least_common_numbers,
             least_common_lucky_numbers,
-            last_week_numbers,
-            two_weeks_numbers
+            tuesday_numbers,
+            friday_numbers
         )
         SUBJECT = "Euromillion Lucky numbers"
         message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
@@ -86,16 +86,16 @@ class Euromillion(object):
 
         numbers = list()
         lucky_numbers = list()
-        last_week_numbers = list()
-        two_weeks_numbers = list()
+        tuesday_numbers = list()
+        friday_numbers = list()
 
         self.cursor.execute(
             """SELECT * FROM results ORDER BY date DESC"""
         )
         rows = self.cursor.fetchall()
 
-        last_week_numbers.append(rows[0][1:])
-        two_weeks_numbers.append(rows[1][1:])
+        tuesday_numbers.append(rows[0][1:])
+        friday_numbers.append(rows[1][1:])
 
         for row in rows:
             numbers.append(row[1])
@@ -115,8 +115,8 @@ class Euromillion(object):
         self.send_email(
             least_common_numbers,
             least_common_lucky_numbers,
-            last_week_numbers,
-            two_weeks_numbers
+            tuesday_numbers,
+            friday_numbers
         )
 
     def choices(self):
