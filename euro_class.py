@@ -29,8 +29,8 @@ class Euromillion(object):
     def send_email(self,
                    least_common_numbers,
                    least_common_lucky_numbers,
-                   last_week_numbers,
-                   two_weeks_numbers):
+                   tuesday_numbers,
+                   friday_numbers):
         gmail_user = GMAIL_USER
         gmail_pwd = GMAIL_PASSWORD
         FROM = 'euroMillion@gmail.com'
